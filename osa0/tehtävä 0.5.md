@@ -1,8 +1,8 @@
-sequenceDiagram
+<pre> sequenceDiagram
     participant browser
     participant server
     
-Note right of browser: go to spa instead of notes
+    Note right of browser: go to spa instead of notes
     
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
     activate server
@@ -29,3 +29,4 @@ Note right of browser: go to spa instead of notes
     deactivate server    
 
     Note right of browser: The browser executes the callback function that renders the notes
+</pre>
