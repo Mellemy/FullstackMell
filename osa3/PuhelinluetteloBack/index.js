@@ -12,6 +12,7 @@ morgan.token('body', (req) => {
 app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(express.static('dist'))
 
 
 
@@ -102,8 +103,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const path = require('path')
-app.use(express.static(path.resolve(__dirname, 'dist')))
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
