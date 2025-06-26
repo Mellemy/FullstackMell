@@ -1,5 +1,8 @@
 import axios from 'axios'
-const baseURL = 'http://localhost:3001/api/persons';
+const baseURL = 
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3001/api/persons'
+    : '/api/persons';
 
 
 const getAll = () => {
