@@ -117,7 +117,9 @@ const errorHandler = (error, request, response, next) => {
 
   next(error)
 }
-
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+})
 app.use(errorHandler)
 
 const PORT = process.env.PORT
