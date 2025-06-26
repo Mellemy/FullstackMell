@@ -102,7 +102,8 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.use(express.static('dist'))
+const path = require('path')
+app.use(express.static(path.resolve(__dirname, 'dist')))
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
