@@ -4,7 +4,7 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
-
+//change Person to person before gitpush
 
 morgan.token('body', (req) => {
   return req.method === 'POST' ? JSON.stringify(req.body) : ''
@@ -61,24 +61,28 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
-  if (!body.name || !body.number) {
-    return response.status(400).json({ error: 'Please add Name and Number' })
-  }
- Person.findOne({ name: body.name }).then(existingPerson => {
-    if (existingPerson) {
-      return response.status(400).json({ error: 'Name must be unique' })
-    }
+  const body = request.body;
 
-    const person = new Person({
-    name: body.name,
-    number: body.number
-  })
-    person.save()
-    .then(savedPerson => response.status(201).json(savedPerson))
-})
-  .catch(error => next(error))
-})
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: 'Please add Name and Number' });
+  }
+
+  Person.findOne({ name: body.name })
+    .then(existingPerson => {
+      if (existingPerson) {
+        return response.status(400).json({ error: 'Name must be unique' });
+      }
+
+      const person = new Person({
+        name: body.name,
+        number: body.number
+      });
+
+      return person.save()
+        .then(savedPerson => response.status(201).json(savedPerson));
+    })
+    .catch(error => next(error));
+});
 
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
@@ -108,15 +112,16 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
+    return response.status(400).json({ error: 'malformatted id' })
   }
+
   if (error.name === 'ValidationError') {
-  return response.status(400).json({ error: error.message })
-}
+    return response.status(400).json({ error: error.message })
+  }
 
-  next(error)
+  return response.status(500).json({ error: 'Something went wrong on the server' })
 }
-
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

@@ -59,11 +59,13 @@ const App = () => {
         setNotification({ message: `Added ${newName}`, type: 'success' })
         setTimeout(() => setNotification({ message: null, type: null }), 4000)
       })
-      .catch(error => {
-        setNotification({ message: `Failed to add ${newName}`, type: 'error' })
-        setTimeout(() => setNotification({ message: null, type: null }), 4000)
-      })
+   .catch(error => {
+  console.log('Full error response:', error.response)
 
+  const errorMsg = error.response?.data?.error || 'Failed to add person'
+  setNotification({ message: errorMsg, type: 'error' })
+  setTimeout(() => setNotification({ message: null, type: null }), 4000)
+})
   }
 
   }
