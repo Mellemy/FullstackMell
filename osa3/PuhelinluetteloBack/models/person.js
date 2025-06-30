@@ -18,7 +18,7 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-   name: {
+  name: {
     type: String,
     minlength: [3, 'Name must be at least 3 characters long'],
     required: [true, 'Name is required']
