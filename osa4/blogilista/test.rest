@@ -1,0 +1,27 @@
+### Get all blogs
+GET http://localhost:3001/api/blogs
+
+### Create a new blog
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "First blog",
+  "author": "Johnny Testman",
+  "url": "http://example.com/blog",
+  "likes": 10
+}
+
+### Delete a blog (replace <id> with real blog _id from MongoDB)
+DELETE http://localhost:3001/api/blogs/6864250d47a99a2895ad61d8
+
+### Try adding an invalid blog (e.g., missing URL or title)
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "",
+  "author": "Johnny",
+  "url": "",
+  "likes": 0
+}
