@@ -1,6 +1,7 @@
 ### Get all blogs
 GET http://localhost:3001/api/blogs
 
+
 ### Create a new blog
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
@@ -24,4 +25,68 @@ Content-Type: application/json
   "author": "Johnny",
   "url": "",
   "likes": 0
+}
+// USER TESTS
+
+### duplicate username
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "root",
+  "name": "Duplicate Root",
+  "password": "salainen"
+}
+
+### Create a new user
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "root",
+  "name": "Superuser",
+  "password": "salainen"
+}
+
+### Get all users
+GET http://localhost:3001/api/users
+
+### Create a blog for a user
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Test partiers",
+  "author": "John testman",
+  "url": "https://testman.fi",
+  "likes": 42,
+  "userId": "686c36b1ecd99534ad09462a"
+}
+###Login incorrect
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "wrongpassword"
+}
+###Login correct
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "salainen"
+}
+
+### Create new blog with token
+POST http://localhost:3001/api/blogs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY4NmMzNmIxZWNkOTk1MzRhZDA5NDYyYSIsImlhdCI6MTc1MTkyNzU0Nn0.Qe0ACZ_4TdKR4QndOKX65YN9QlVaMkW4TsCF9C-LVFM
+Content-Type: application/json
+
+{
+  "title": "passowrd blog",
+  "author": "me",
+  "url": "https://something.com/blog",
+  "likes": 5
 }
