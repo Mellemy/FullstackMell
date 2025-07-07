@@ -12,10 +12,10 @@ Content-Type: application/json
   "likes": 10
 }
 
-### Delete a blog (replace <id> with real blog _id from MongoDB)
+### Delete a blog 
 DELETE http://localhost:3001/api/blogs/6864250d47a99a2895ad61d8
 
-### Try adding an invalid blog (e.g., missing URL or title)
+### add invalid blog
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
