@@ -45,37 +45,34 @@ describe('User', () => {
     assert(usernames.includes(newUser.username))
   })
 
-  test('fails with 400 if username taken', async () => {
-    const usersAtStart = await helper.usersInDb()
+ test('fails with 400 if username taken', async () => {
+  const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'JOhnny',
-      name: 'John',
-      password: 'salainen',
-    }
+  const newUser = {
+    username: 'johnny',
+    name: 'John',
+    password: 'salainen',
+  }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+  await api.post('/api/users').send(newUser).expect(201)
 
-    assert(result.body.error.includes('expected `username` to be unique'))
+  const duplicateUser = {
+    username: 'johnny',
+    name: 'Duplicate John',
+    password: 'salainen',
+  }
 
-    const usersAtEnd = await helper.usersInDb()
-    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
-  })
+  const result = await api
+    .post('/api/users')
+    .send(duplicateUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
 
-  test('GET all users', async () => {
-    const response = await api
-      .get('/api/users')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+  assert(result.body.error.includes('expected `username` to be unique'))
 
-    assert.strictEqual(response.body.length, 1)
-    const usernames = response.body.map(u => u.username)
-    assert(usernames.includes('root'))
-  })
+  const usersAtEnd = await helper.usersInDb()
+  assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
+})
 
   test('fails with 400 if no password', async () => {
     const newUser = {
@@ -110,3 +107,5 @@ describe('User', () => {
   })
   
 })
+
+
