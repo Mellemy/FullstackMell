@@ -4,6 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
 import BlogForm from './components/Blogform'
+import Togglable from './components/togglable'
+import { useRef } from 'react'
 
 
 const App = () => {
@@ -17,7 +19,7 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null)
 const [successMessage, setSuccessMessage] = useState(null)
 const [blogVisible, setblogVisible] = useState(false)
-
+const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -76,7 +78,7 @@ const handleCreateBlog = async (newBlog) => {
     setSuccessMessage(`a new blog "${createdBlog.title}" was added by ${user.name}`)
     setTimeout(() => setSuccessMessage(null), 5000)
 
-    setblogVisible(false) 
+    blogFormRef.current.toggleVisibility()
   } catch (error) {
     console.error('Failed to create blog', error)
     setErrorMessage('something went wrong while creating the blog')
@@ -129,14 +131,10 @@ const handleCreateBlog = async (newBlog) => {
         <Blog key={blog.id} blog={blog} />
       )}
 
+    <Togglable buttonLabel="add blog" ref={blogFormRef}>
     <h2>Create a new blog</h2>
-    {!blogVisible ? (
-    <button onClick={() => setblogVisible(true)}>new blog</button>
-    ) : (
-    <div>
     <BlogForm createBlog={handleCreateBlog} />
-    <button onClick={() => setblogVisible(false)}>cancel</button>
-    </div>  )}
+    </Togglable>
     </div>
     )
   
