@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
+import BlogForm from './components/Blogform'
 
 
 const App = () => {
@@ -15,6 +16,8 @@ const App = () => {
     const [newUrl, setNewUrl] = useState('')
     const [errorMessage, setErrorMessage] = useState(null)
 const [successMessage, setSuccessMessage] = useState(null)
+const [blogVisible, setblogVisible] = useState(false)
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -60,33 +63,24 @@ const [successMessage, setSuccessMessage] = useState(null)
     blogService.setToken(null)
   }
 
-  const CreateBlog = async (event) => {
-  event.preventDefault()
-  if (!newTitle || !newAuthor || !newUrl) {
+const handleCreateBlog = async (newBlog) => {
+  if (!newBlog) {
     setErrorMessage('please fill all fields')
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
+    setTimeout(() => setErrorMessage(null), 5000)
     return
   }
-  try {
-    const newBlog = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    }
 
+   try {
     const createdBlog = await blogService.create(newBlog)
     setBlogs(blogs.concat(createdBlog))
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
     setSuccessMessage(`a new blog "${createdBlog.title}" was added by ${user.name}`)
-    setTimeout(() => {
-    setSuccessMessage(null)
-    } , 5000)
+    setTimeout(() => setSuccessMessage(null), 5000)
+
+    setblogVisible(false) 
   } catch (error) {
     console.error('Failed to create blog', error)
+    setErrorMessage('something went wrong while creating the blog')
+    setTimeout(() => setErrorMessage(null), 5000)
   }
 }
 
@@ -136,26 +130,15 @@ const [successMessage, setSuccessMessage] = useState(null)
       )}
 
     <h2>Create a new blog</h2>
-    <form onSubmit={CreateBlog}>
+    {!blogVisible ? (
+    <button onClick={() => setblogVisible(true)}>new blog</button>
+    ) : (
     <div>
-    Title:
-    <input type="text"  value={newTitle} onChange={({ target }) => setNewTitle(target.value)} />
-  </div>
-  <div>
-    Author:
-    <input type="text"  value={newAuthor} onChange={({ target }) => setNewAuthor(target.value)}  />
-  </div>
-  <div>
-    URL:
-    <input type="text" value={newUrl}
-      onChange={({ target }) => setNewUrl(target.value)}
-    />
-  </div>
-  <button type="submit">Create</button>
-</form>
+    <BlogForm createBlog={handleCreateBlog} />
+    <button onClick={() => setblogVisible(false)}>cancel</button>
+    </div>  )}
     </div>
-    
-  )
+    )
   
 
 }
