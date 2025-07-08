@@ -105,6 +105,23 @@ const handleLike = async (blogToLike) => {
     setTimeout(() => setErrorMessage(null), 5000)
   }
 }
+
+const handleDelete = async (deleted) => {
+  const confirm = window.confirm(`Delete "${deleted.title}" by ${deleted.author}?`)
+  if (!confirm) return
+
+  try {
+    await blogService.remove(deleted.id)
+    setBlogs(blogs.filter(blog => blog.id !== deleted.id))
+    setSuccessMessage(`Deleted blog: ${deleted.title}`)
+    setTimeout(() => setSuccessMessage(null), 5000)
+  } catch (error) {
+    console.error('Failed to delete blog', error)
+    setErrorMessage('Failed to delete blog')
+    setTimeout(() => setErrorMessage(null), 5000)
+  }
+}
+
     if (user === null) {
     return (
       <div>
@@ -146,9 +163,18 @@ const handleLike = async (blogToLike) => {
         <button onClick={Logout} >Logout</button>
        </p>
       
-      {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} handleLike={handleLike} />
-        )}
+      {blogs
+      .slice()
+      .sort((a, b) => b.likes - a.likes)
+      .map(blog =>
+      <Blog
+      key={blog.id}
+      blog={blog}
+      handleLike={handleLike}
+      handleDelete={handleDelete}
+      currentUser={user}
+      />
+)}
 
     <Togglable buttonLabel="add blog" ref={blogFormRef}>
     <h2>Create a new blog</h2>

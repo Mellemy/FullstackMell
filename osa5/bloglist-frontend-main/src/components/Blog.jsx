@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import '../index.css'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleDelete, currentUser }) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisibility = () => {
     setVisible(!visible)
   }
+const owned = blog.user?.username === currentUser?.username
 
   return (
     <div className="blog">
@@ -25,6 +26,11 @@ const Blog = ({ blog, handleLike }) => {
         <button onClick={() => handleLike(blog)}>like</button>
         </div>
         <div> {blog.user?.name}</div>
+          {owned && (
+          <button className="remove" onClick={() => handleDelete(blog)}>
+          Remove
+          </button>
+          )}
         </div>
       )}
     </div>
