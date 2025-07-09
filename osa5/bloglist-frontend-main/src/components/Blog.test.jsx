@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
-
+import BlogForm from './Blogform'
 let blog
 let loggedUser
 
@@ -47,7 +47,7 @@ test('button pressed, url and likes print', async () => {
 })
 
 
-//test3
+//TEST 3
 test('liked two times', async () => {
 const mockHandler = vi.fn()
   render(<Blog blog={blog} handleLike={mockHandler} loggedUser={loggedUser} />)
@@ -61,4 +61,27 @@ const mockHandler = vi.fn()
   await user.click(button2)
 
   expect(mockHandler).toHaveBeenCalledTimes(2)
+})
+
+//TEST 4
+test('createBlog with filled form', async () => {
+  const mockHandler = vi.fn()
+  const { container } = render(<BlogForm createBlog={mockHandler} />)
+
+  const user = userEvent.setup()
+  const inputs = container.querySelectorAll('input')
+  const [titleInput, authorInput, urlInput] = inputs
+
+  await user.type(titleInput, 'New Blog')
+  await user.type(authorInput, 'Mary 2')
+  await user.type(urlInput, 'https://example2.com')
+
+  await user.click(screen.getByText('Create'))
+
+  expect(mockHandler).toHaveBeenCalledTimes(1)
+  expect(mockHandler).toHaveBeenCalledWith({
+    title: 'New Blog',
+    author: 'Mary 2',
+    url: 'https://example2.com',
+  })
 })
