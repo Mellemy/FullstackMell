@@ -70,5 +70,25 @@ describe('Blog app', () => {
 
   })
 
+test.only('Liking a blog', async ({ page }) => {
+  await page.getByRole('textbox').first().fill('mluukkai')
+  await page.getByRole('textbox').last().fill('salainen')
+  await page.getByRole('button', { name: 'login' }).click()
+
+  await page.getByRole('button', { name: 'add blog' }).click()
+  await page.getByTestId('Title').fill('Good Blog')
+  await page.getByTestId('Author').fill('narcissus')
+  await page.getByTestId('URL').fill('http://something.com')
+  await page.getByRole('button', { name: 'Create' }).click()
+
+  await page.getByText('Good Blog narcissus').getByRole('button', { name: 'view' }).click()
+
+  const likes = page.getByTestId('likes')
+  await expect(likes).toContainText('Likes: 0')
+
+  await page.getByRole('button', { name: 'like' }).click()
+
+  await expect(likes).toContainText('Likes: 1')
+})
 
  })

@@ -21,9 +21,9 @@ const Blog = ({ blog, handleLike, handleDelete, currentUser }) => {
       {visible && (
         <div className="blog-details">
           <div> {blog.url}</div>
-          <div>
-         Likes: {blog.likes}{' '}
-            <button onClick={() => handleLike(blog)}>like</button>
+          <div data-testid="likes">
+          Likes: {blog.likes}{' '}
+          <button onClick={() => handleLike(blog)}>like</button>
           </div>
           <div> {blog.user?.name}</div>
           {owned && (
