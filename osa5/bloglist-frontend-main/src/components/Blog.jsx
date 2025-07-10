@@ -10,7 +10,7 @@ const Blog = ({ blog, handleLike, handleDelete, currentUser }) => {
   const owned = blog.user?.username === currentUser?.username
 
   return (
-    <div className="blog">
+    <div className="blog" data-testid="blog">
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>
