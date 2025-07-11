@@ -5,6 +5,7 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(state => state)
   const dispatch = useDispatch()
 
+
   const handleVote = (id) => {
     dispatch(vote(id))
   }
