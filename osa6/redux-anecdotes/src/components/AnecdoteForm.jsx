@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { makeAnec } from '../reducers/anecdoteSlice'
-import { showNotification } from '../reducers/notificationSlice'
+import { setNotification } from '../reducers/notificationSlice'
 
 
 const AnecdoteForm = () => {
@@ -11,7 +11,7 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     dispatch(makeAnec(content))
-    dispatch(showNotification(`Posted new Anecdote: '${content}'`, 5))
+    dispatch(setNotification(`Posted new Anecdote: '${content}'`, 5))
   }
 
   return (
