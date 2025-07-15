@@ -1,15 +1,19 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteSlice'
 import { setNotification } from '../reducers/notificationSlice'
+import { useMemo } from 'react'
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(({ anecdotes, filter }) => {
+ const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
+  const dispatch = useDispatch()
+
+  const filtered = useMemo(() => {
     const lowercasedFilter = filter.toLowerCase()
     return anecdotes
       .filter(a => a.content.toLowerCase().includes(lowercasedFilter))
       .sort((a, b) => b.votes - a.votes)
-  })
-  const dispatch = useDispatch()
+  }, [anecdotes, filter])
 
   
 
@@ -20,7 +24,7 @@ const AnecdoteList = () => {
 
   return (
     <div>
-    {anecdotes.map(anecdote =>
+  {filtered.map(anecdote =>
         <div key={anecdote.id}>
         <div>{anecdote.content}</div>
         <div>
