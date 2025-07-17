@@ -124,6 +124,11 @@ const typeDefs = `
     published: Int!
     genres: [String!]!
   ): Book!
+
+    editAuthor(
+    name: String!
+    setBornTo: Int!
+  ): Author
 }
 `
 
@@ -158,16 +163,24 @@ const resolvers = {
       books.push(Book)
 
       const AuthorState = authors.some(a => a.name === args.author)
-      if (!AuthorState) {
+       if (!AuthorState) {
           authors.push({
           name: args.author,
           id: uuid(),
         })
       }
       return Book
+    },
+
+     editAuthor: (root, args) => {
+     const Author = authors.find(a => a.name === args.name)
+      if (!Author) {
+        return null
+      }
+      Author.born = args.setBornTo
+      return Author
     }
   }
-
 }
 
 const server = new ApolloServer({
