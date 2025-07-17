@@ -3,26 +3,26 @@ const { startStandaloneServer } = require('@apollo/server/standalone')
 
 let authors = [
   {
-    title: 'Robert Martin',
+    name: 'Robert Martin',
     id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
     born: 1952,
   },
   {
-    title: 'Martin Fowler',
+    name: 'Martin Fowler',
     id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
     born: 1963
   },
   {
-    title: 'Fyodor Dostoevsky',
+    name: 'Fyodor Dostoevsky',
     id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
     born: 1821
   },
   { 
-    title: 'Joshua Kerievsky', // birthyear not known
+    name: 'Joshua Kerievsky', // birthyear not known
     id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
   },
   { 
-    title: 'Sandi Metz', // birthyear not known
+    name: 'Sandi Metz', // birthyear not known
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ]
@@ -106,7 +106,7 @@ const typeDefs = `
     id: ID!
   }
   type Author {
-    title: String!
+    name: String!
     born: Int
     bookCount: Int!
   }
@@ -125,7 +125,7 @@ const resolvers = {
     allBooks: () => books,
     allAuthors: () => {
       return authors.map(author => {
-        const count = books.filter(book => book.author === author.title).length;
+        const count = books.filter(book => book.author === author.name).length;
         return { ...author, bookCount: count }
       })
     }
