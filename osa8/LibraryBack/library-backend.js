@@ -3,26 +3,26 @@ const { startStandaloneServer } = require('@apollo/server/standalone')
 
 let authors = [
   {
-    name: 'Robert Martin',
+    title: 'Robert Martin',
     id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
     born: 1952,
   },
   {
-    name: 'Martin Fowler',
+    title: 'Martin Fowler',
     id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
     born: 1963
   },
   {
-    name: 'Fyodor Dostoevsky',
+    title: 'Fyodor Dostoevsky',
     id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
     born: 1821
   },
   { 
-    name: 'Joshua Kerievsky', // birthyear not known
+    title: 'Joshua Kerievsky', // birthyear not known
     id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
   },
   { 
-    name: 'Sandi Metz', // birthyear not known
+    title: 'Sandi Metz', // birthyear not known
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ]
@@ -33,8 +33,8 @@ let authors = [
  * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
  *
  * English:
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
+ * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's title
+ * However, for simplicity, we will store the author's title in connection with the book
  *
  * Spanish:
  * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
@@ -98,14 +98,37 @@ let books = [
 */
 
 const typeDefs = `
-  type Query {
-    dummy: Int
+    type Book {
+    title: String!
+    published: Int!
+    author: String!
+    genres: [String!]! 
+    id: ID!
+  }
+  type Author {
+    title: String!
+    born: Int
+    bookCount: Int!
+  }
+    type Query {
+    bookCount: Int!
+    authorCount: Int!
+    allBooks: [Book!]!
+    allAuthors: [Author!]!
   }
 `
 
 const resolvers = {
-  Query: {
-    dummy: () => 0
+   Query: {
+    bookCount: () => books.length,
+    authorCount: () => authors.length,
+    allBooks: () => books,
+    allAuthors: () => {
+      return authors.map(author => {
+        const count = books.filter(book => book.author === author.title).length;
+        return { ...author, bookCount: count }
+      })
+    }
   }
 }
 
