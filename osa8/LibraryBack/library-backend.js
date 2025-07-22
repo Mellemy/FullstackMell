@@ -4,6 +4,7 @@ const { startStandaloneServer } = require('@apollo/server/standalone')
 const connectToMongo = require('./mongo')
 const Book = require('./models/book')
 const Author = require('./models/author')
+const { GraphQLError } = require('graphql')
 
 const typeDefs = `
     type Book {
@@ -69,31 +70,64 @@ const resolvers = {
     }
   },
 
-  Mutation: {
-    addBook: async (_, args) => {
-      let author = await Author.findOne({ name: args.author })
-      if (!author) {
+Mutation: {
+  addBook: async (_, args) => {
+    let author = await Author.findOne({ name: args.author })
+
+    if (!author) {
+      try {
         author = new Author({ name: args.author })
         await author.save()
+      } catch (error) {
+        throw new GraphQLError('Author validation failed: ' + error.message, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.author,
+            error
+          }
+        })
       }
+    }
 
+    try {
       const book = new Book({ ...args, author: author._id })
       await book.save()
       return book.populate('author')
-    },
+    } catch (error) {
+      throw new GraphQLError('Book validation failed: ' + error.message, {
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: args,
+          error
+        }
+      })
+    } 
+  },
 
-    editAuthor: async (_, args) => {
-      const author = await Author.findOne({ name: args.name })
-      if (!author) return null
-      author.born = args.setBornTo
+editAuthor: async (_, args) => {
+    const author = await Author.findOne({ name: args.name })
+    if (!author) return null
+
+    author.born = args.setBornTo
+
+    try {
       await author.save()
       const books = await Book.find({ author: author._id })
       return {
         ...author.toObject(),
         bookCount: books.length
       }
+    } catch (error) {
+      throw new GraphQLError('Author update failed: ' + error.message, {
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: args,
+          error
+        }
+      })
     }
   }
+}
 }
 
 const start = async () => {
