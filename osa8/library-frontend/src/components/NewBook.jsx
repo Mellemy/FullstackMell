@@ -50,9 +50,12 @@ const NewBook = (props) => {
     onError: (error) => {
       console.error(error.graphQLErrors[0]?.message)
     },
-  refetchQueries: [
-    { query: ALL_BOOKS },
-    { query: ALL_AUTHORS } 
+   refetchQueries: [
+    {
+      query: ALL_BOOKS,
+      variables: { genre: null },
+    },
+    { query: ALL_AUTHORS }
   ],
 }) 
   if (!props.show) {

@@ -16,9 +16,10 @@ const ALL_BOOKS = gql`
 const Books = (props) => {
   const [genreFilter, setGenreFilter] = useState(null)
 
-  const { loading, data } = useQuery(ALL_BOOKS, {
-    variables: { genre: genreFilter }
-  })
+ const { loading, data } = useQuery(ALL_BOOKS, {
+  variables: { genre: genreFilter },
+  fetchPolicy: 'network-only',
+})
 
   if (!props.show) return null
   if (loading) return <div>loading...</div>
